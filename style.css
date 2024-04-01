@@ -79,7 +79,6 @@ body {
     backface-visibility: hidden;
     transition: transform 0.4s linear;
     border-radius: 1rem;
-
 }
 
 .front {
