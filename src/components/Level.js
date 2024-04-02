@@ -21,9 +21,8 @@ function Level({ handleLevel }) {
     const getMoves = (level) => { return ((level.cols * level.rows) / 2) + 2 }
     let setLevel = (level) => {
         level.moves = getMoves(level);
-        console.log(level)
         handleLevel(level)
-        // localStorage.setItem('level', JSON.stringify(level));
+        localStorage.setItem('level', JSON.stringify(level));
     }
     return (
         <div className="">

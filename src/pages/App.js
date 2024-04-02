@@ -24,7 +24,7 @@ function App() {
         </header>
 
         <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4">
-          {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level}/>}
+          {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level} changeDifficulty={setLevel}/>}
         </div>
 
         <footer className="absolute bottom-0 px-9 py-4 w-full bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl flex justify-between text-white font-thin">

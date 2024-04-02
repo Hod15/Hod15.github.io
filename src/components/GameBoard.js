@@ -68,9 +68,10 @@ function shuffle(array) {
  * GameBoard component
  * @returns JSX
  */
-function GameBoard({ level }) {
+function GameBoard({ level, changeDifficulty }) {
     const [game, setGame] = useState([]);
-    // const [time, setTime] = useState(0);
+    const [cards, setCards] = useState([]);
+    const [time, setTime] = useState(0);
     // const [game_start, setGameStart] = useState(false);
     // const [game_pause, setGamePause] = useState(false);
     // const [game_over, setGameOver] = useState(false);
@@ -92,12 +93,11 @@ function GameBoard({ level }) {
         {
             emojis = emojis.concat(EMOJIS_KEYS.slice(0, required_length - current_length));
             current_length = emojis.length;
-            console.log(current_length);
         }
         
         emojis = shuffle(emojis.concat(emojis));
         setGame(emojis);
-        // localStorage.setItem("gameboard", JSON.stringify(emojis));
+        localStorage.setItem("gameboard", JSON.stringify(emojis));
     }
 
     useEffect(() => {
@@ -109,21 +109,28 @@ function GameBoard({ level }) {
             init();
     }, [level]);
 
-    // const reset = () => {
-    //     setGame(constructGame(board));
-    //     setGamePlayed(buttons_key + game.length)
+    useEffect(() => {
+        create_buttons();
+    }, [game]);
 
-    //     if (game_start)
-    //         setGameStart(false);
-    //     if (game_pause)
-    //         setGamePause(false);
-    //     if (game_over)
-    //         setGameOver(false);
+    const handleReset = () => {
+        setGame(new Array(level.rows * level.cols))
+        setTimeout(() => init(), 500)
+        
+        // if (game_start)
+        //     setGameStart(false);
 
-    //     setTime(0);
-    //     setFlags(0);
-    //     revealedRef.current = []
-    // }
+        // if (game_over)
+        //     setGameOver(false);
+
+        setTime(0);
+    }
+
+    const handleChangeDifficulty = () => {
+        localStorage.removeItem("gameboard");
+        localStorage.removeItem("level");
+        changeDifficulty(null);
+    }
 
     /**
      * 
@@ -170,13 +177,13 @@ function GameBoard({ level }) {
     //     return () => clearInterval(interval_id);
     // }, [time, game_start, game_pause, game_over]);
 
-    // const timer = (time) => {
-    //     // calculate time spent
-    //     const minutes = Math.floor(time / 60);
-    //     const seconds = time - minutes * 60;
+    const displayTime = (time) => {
+        // calculate time spent
+        const minutes = Math.floor(time / 60);
+        const seconds = time - minutes * 60;
 
-    //     return `${minutes < 10 ? '0' + minutes.toString() : minutes} : ${seconds < 10 ? '0' + seconds.toString() : seconds}`
-    // }
+        return `${minutes < 10 ? '0' + minutes.toString() : minutes} : ${seconds < 10 ? '0' + seconds.toString() : seconds}`
+    }
 
     const create_buttons = () => {
         let buttons = [];
@@ -185,16 +192,21 @@ function GameBoard({ level }) {
             buttons.push(<Card key={i} content={EMOJIS[game[i]]}/>)
         }
 
-        return (buttons)
+        setCards(buttons);
     }
 
     return (
         // <div className="flex flex-col lg:flex-row justify-center">
-            // <div className={`mx-auto`}>
-                <div className={`grid cols-${level.cols} rows-${level.rows} justify-center gap-2`}>
-                    { create_buttons() }
+            <div className={`mx-auto relative`}>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10  flex space-x-1 mb-2">
+                    <button className="px-6 py-2 bg-red-300" onClick={ handleReset }>reset</button>
+                    <div className="px-6 py-2 bg-red-300">{ displayTime(time) }</div>
+                    <button className="px-6 py-2 bg-red-300" onClick={ handleChangeDifficulty }>change</button>
                 </div>
-            // </div>
+                <div className={`grid cols-${level.cols} rows-${level.rows} justify-center gap-2`}>
+                    { cards }
+                </div>
+            </div>
         // </div>
     )
 }

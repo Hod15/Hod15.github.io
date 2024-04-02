@@ -10,6 +10,11 @@ const Card = ({content}) => {
     //     return () => clearInterval(interval_id);
     // }, [revealed, gameIsOver]);
 
+    useEffect(() => {
+        setClicked(false);
+        setRevealed(false);
+    }, [content]);
+
     const handleClick = (e) => {
 
         // setRevealed(true)
@@ -31,7 +36,6 @@ const Card = ({content}) => {
     }
 
     const getClassname = () => {
-
         return (clicked || revealed) ? " revealed" : "";
     }
 
