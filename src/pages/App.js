@@ -4,12 +4,26 @@ import GameBoard from "../components/GameBoard";
 
 function App() {
   const [level, setLevel] = useState(null)
+  const [ moves, setMoves ] = useState(0);
+  const [ found, setFound ] = useState(0);
 
   useEffect(() => {
     let lvl = localStorage.getItem('level');
     if(lvl)
       setLevel(JSON.parse(lvl))
   }, []);
+
+
+  useEffect(() => {
+    if(level)
+      setMoves(level.moves)
+    else
+      setMoves(0);
+  }, [level]);
+
+  const resetMoves = () => {
+    setMoves(level.moves)
+  }
 
   // bg-[url('../public/img/bg.jpg')]
   return (
@@ -18,13 +32,13 @@ function App() {
           <h1 className="inline-block text-2xl text-center font-pressStart">Keep it</h1>
 
           <div className="text-center">
-            <span> Moves: 10 ,</span>
-            <span> Found: 10 </span>
+            <span> Moves left : { moves } ,</span>
+            <span> Found: { found } </span>
           </div>
         </header>
 
         <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4">
-          {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level} changeDifficulty={setLevel}/>}
+          {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level} changeDifficulty={setLevel} handleMoves={ setMoves } movesLeft={moves} reset={ resetMoves } />}
         </div>
 
         <footer className="absolute bottom-0 px-9 py-4 w-full bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl flex justify-between text-white font-thin">

@@ -18,7 +18,11 @@ const LEVELS = [
 
 
 function Level({ handleLevel }) {
-    const getMoves = (level) => { return ((level.cols * level.rows) / 2) + 2 }
+    const getMoves = (level) => {
+        let mv = (level.cols * level.rows) / 2;
+        mv += mv / 4;
+        return Math.ceil(mv);
+    }
     let setLevel = (level) => {
         level.moves = getMoves(level);
         handleLevel(level)

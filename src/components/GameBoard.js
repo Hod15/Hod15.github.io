@@ -1,5 +1,4 @@
-import { click } from "@testing-library/user-event/dist/click";
-import { useRef } from "react";
+// import { useRef } from "react";
 import { useEffect, useState } from "react";
 import Card from "./Card";
 
@@ -69,7 +68,7 @@ function shuffle(array) {
  * GameBoard component
  * @returns JSX
  */
-function GameBoard({ level, changeDifficulty }) {
+function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
     const [game, setGame] = useState([]);
     const [cards, setCards] = useState([]);
     const [revealedCards, setRevealedCards] = useState([]);
@@ -116,8 +115,10 @@ function GameBoard({ level, changeDifficulty }) {
     }, [level]);
 
     const handleReset = () => {
-        setGame(Array.from({ length: (level.rows * level.cols) }, () => "f"))
-        setTimeout(() => init(), 500)
+        setGame(Array.from({ length: (level.rows * level.cols) }, () => "f"));
+        setTimeout(() => init(), 500);
+        
+        reset();
         
         if (game_start)
             setGameStart(false);
@@ -157,6 +158,7 @@ function GameBoard({ level, changeDifficulty }) {
                 played_cards[last_clicked_card] = false;
 
                 setTimeout(() => setRevealedCards(played_cards), 500);
+                handleMoves(movesLeft - 1);
             }
             else
             {
