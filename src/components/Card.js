@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
-const Card = ({content}) => {
+const Card = ({id, content, reveal, hasBeenRevealed}) => {
     const [revealed, setRevealed] = useState(false);
-    const [clicked, setClicked] = useState(false);
-    // const [flaged,  setFlaged] = useState(false);
 
     // useEffect(() => {
     //     const interval_id = (revealed && !gameIsOver) && setInterval(() => setClicked(false), 1000)
@@ -11,36 +9,21 @@ const Card = ({content}) => {
     // }, [revealed, gameIsOver]);
 
     useEffect(() => {
-        setClicked(false);
+        setRevealed(hasBeenRevealed)
+    }, [hasBeenRevealed]);
+
+    useEffect(() => {
         setRevealed(false);
     }, [content]);
 
     const handleClick = (e) => {
-
-        // setRevealed(true)
-
-        // if (!gameHasStart)
-        //     handleGameStart(true);
-
-        // if (gameIsOver)
-        //     return;
-
-        // if (char === "*")
-        //     triggerBomb();
-
-        // if (char === " " && !revealed)
-        //     reveal();
-
-        setClicked(true)
-        // setTimeout(() => checksForWin(), 10);
-    }
-
-    const getClassname = () => {
-        return (clicked || revealed) ? " revealed" : "";
+        if(revealed)
+            return;
+        reveal(id)
     }
 
     return (
-        <button type="button" className={"relative text-5xl" + getClassname()} onClick = { handleClick }>
+        <button type="button" className={"relative text-5xl " + ((revealed) ? "revealed" : "")} onClick = { () => handleClick() }>
             <div className="h-full w-full bg-black front rounded-md"></div>
             <div className="h-full w-full back bg-green-400 text-center rounded-md flex justify-center items-center">
                 <p>{ content }</p>

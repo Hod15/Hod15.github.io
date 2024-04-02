@@ -1,3 +1,4 @@
+import { click } from "@testing-library/user-event/dist/click";
 import { useRef } from "react";
 import { useEffect, useState } from "react";
 import Card from "./Card";
@@ -71,20 +72,18 @@ function shuffle(array) {
 function GameBoard({ level, changeDifficulty }) {
     const [game, setGame] = useState([]);
     const [cards, setCards] = useState([]);
+    const [revealedCards, setRevealedCards] = useState([]);
+
+    const [last_clicked_card, setLastClickedCard] = useState(-1);
+    const [clicked_card, setClickedCard] = useState(-1);
+
     const [time, setTime] = useState(0);
-    // const [game_start, setGameStart] = useState(false);
-    // const [game_pause, setGamePause] = useState(false);
-    // const [game_over, setGameOver] = useState(false);
-    // const [flags, setFlags] = useState(0);
-    // const [buttons_key, setGamePlayed] = useState(0)
-
-
-    // const audioElement = useRef();
-    // const revealedRef = useRef([]);
-    // revealedRef.current = [];
+    const [game_start, setGameStart] = useState(false);
+    const [game_over, setGameOver] = useState(false);
 
     const init = () => {
-        let required_length  = (level.rows * level.cols) / 2;
+        let array_size = level.rows * level.cols;
+        let required_length  = array_size / 2;
         const EMOJIS_KEYS = Object.keys(EMOJIS);
         let emojis = EMOJIS_KEYS.slice(0, required_length );
 
@@ -97,31 +96,37 @@ function GameBoard({ level, changeDifficulty }) {
         
         emojis = shuffle(emojis.concat(emojis));
         setGame(emojis);
+
+        let played_cards = Array.from({ length: array_size }, () => false);
+        setRevealedCards(played_cards);
         localStorage.setItem("gameboard", JSON.stringify(emojis));
+        localStorage.setItem("played_cards", JSON.stringify(played_cards));
     }
 
     useEffect(() => {
-        // document.querySelector(':root').style.setProperty('--gap', '2px')
         let storedGame = JSON.parse(localStorage.getItem('gameboard'));
+        let storedGamePlay = JSON.parse(localStorage.getItem('played_cards'));
         if(storedGame)
+        {
             setGame(storedGame);
+            setRevealedCards(storedGamePlay);
+        }
         else
             init();
     }, [level]);
 
-    useEffect(() => {
-        create_buttons();
-    }, [game]);
-
     const handleReset = () => {
-        setGame(new Array(level.rows * level.cols))
+        setGame(Array.from({ length: (level.rows * level.cols) }, () => "f"))
         setTimeout(() => init(), 500)
         
-        // if (game_start)
-        //     setGameStart(false);
+        if (game_start)
+            setGameStart(false);
 
         // if (game_over)
         //     setGameOver(false);
+        
+        setClickedCard(-1);
+        setLastClickedCard(-1);
 
         setTime(0);
     }
@@ -129,42 +134,45 @@ function GameBoard({ level, changeDifficulty }) {
     const handleChangeDifficulty = () => {
         localStorage.removeItem("gameboard");
         localStorage.removeItem("level");
+        localStorage.removeItem("played_cards");
         changeDifficulty(null);
     }
 
-    /**
-     * 
-     * @param {*} id (Number): the id to reveal
-     */
-    // const handleReveal = (id) => {
-    //     reveal(id);
-    // }
+    useEffect(() => {
+        
+        if(clicked_card !== -1)
+        {
+            let played_cards = revealedCards;
+            played_cards[clicked_card] = true;
+            console.log(played_cards)
+            setRevealedCards(played_cards);
+        }
 
-    // const handlePause = () => {
-    //     let rootStyle = document.querySelector(':root').style
+        if(last_clicked_card !== -1)
+        {
+            if(game[last_clicked_card] !== game[clicked_card])
+            {
+                let played_cards = [...revealedCards];
+                played_cards[clicked_card] = false;
+                played_cards[last_clicked_card] = false;
 
-    //     if (!game_pause)
-    //     {
-    //         rootStyle.setProperty('--gap', '0px')
-    //         for (let i = 0; i < game.length; i++) {
-    //             if (!revealedRef.current[i].classList.contains('revealed')){
-    //                 revealedRef.current[i].setAttribute('disabled', true)
-    //             }
-    //             continue;
-    //         }
-    //         setGamePause(true)
-    //     }
-    //     else{
-    //         rootStyle.setProperty('--gap', '2px')
-    //         for (let i = 0; i < game.length; i++) {
-    //             if (!revealedRef.current[i].classList.contains('revealed')){
-    //                 revealedRef.current[i].removeAttribute('disabled')
-    //             }
-    //             continue;
-    //         }
-    //         setGamePause(false)
-    //     }
-    // }
+                setTimeout(() => setRevealedCards(played_cards), 500);
+            }
+            else
+            {
+                localStorage.setItem("played_cards", JSON.stringify(revealedCards));
+            }
+
+            setLastClickedCard(-1);
+            setClickedCard(-1);
+        }
+        else
+            setLastClickedCard(clicked_card);
+
+        if(!game_start)
+            setGameStart(true)
+
+    }, [clicked_card]);
 
     // const click = (id) => {
     //     setTimeout(() => {
@@ -172,10 +180,10 @@ function GameBoard({ level, changeDifficulty }) {
     //     }, 10);
     // }
 
-    // useEffect(() => {
-    //     const interval_id = (game_start && !game_pause && !game_over) && setInterval(() => setTime(time + 1), 1000);
-    //     return () => clearInterval(interval_id);
-    // }, [time, game_start, game_pause, game_over]);
+    useEffect(() => {
+        const interval_id = (game_start && !game_over) && setInterval(() => setTime(time + 1), 1000);
+        return () => clearInterval(interval_id);
+    }, [time, game_start, game_over]);
 
     const displayTime = (time) => {
         // calculate time spent
@@ -185,26 +193,24 @@ function GameBoard({ level, changeDifficulty }) {
         return `${minutes < 10 ? '0' + minutes.toString() : minutes} : ${seconds < 10 ? '0' + seconds.toString() : seconds}`
     }
 
-    const create_buttons = () => {
-        let buttons = [];
-
-        for (let i = 0; i < game.length; i++) {
-            buttons.push(<Card key={i} content={EMOJIS[game[i]]}/>)
-        }
-
-        setCards(buttons);
-    }
-
     return (
         // <div className="flex flex-col lg:flex-row justify-center">
             <div className={`mx-auto relative`}>
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10  flex space-x-1 mb-2">
                     <button className="px-6 py-2 bg-red-300" onClick={ handleReset }>reset</button>
                     <div className="px-6 py-2 bg-red-300">{ displayTime(time) }</div>
-                    <button className="px-6 py-2 bg-red-300" onClick={ handleChangeDifficulty }>change</button>
+                    <button className="px-6 py-2 bg-red-300" onClick={ handleChangeDifficulty }>change level</button>
                 </div>
                 <div className={`grid cols-${level.cols} rows-${level.rows} justify-center gap-2`}>
-                    { cards }
+                    {game.map((value, index) => (
+                        <Card
+                            key={index}
+                            id={index}
+                            content={EMOJIS[game[index]]}
+                            reveal={ setClickedCard }
+                            hasBeenRevealed={revealedCards[index]}
+                        />
+                    ))}
                 </div>
             </div>
         // </div>
