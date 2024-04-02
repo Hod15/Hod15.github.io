@@ -1,24 +1,24 @@
 const LEVELS = [
     {
         "name": "beginner",
-        "col": 3,
-        "row": 4,
+        "cols": 3,
+        "rows": 4,
     },
     {
         "name": "intermediate",
-        "col": 6,
-        "row": 8,
+        "cols": 6,
+        "rows": 8,
     },
     {
         "name": "advanced",
-        "col": 6,
-        "row": 9,
+        "cols": 6,
+        "rows": 9,
     }
 ];
 
 
 function Level({ handleLevel }) {
-    const getMoves = (level) => { return ((level.col * level.row) / 2) + 2 }
+    const getMoves = (level) => { return ((level.cols * level.rows) / 2) + 2 }
     let setLevel = (level) => {
         level.moves = getMoves(level);
         console.log(level)

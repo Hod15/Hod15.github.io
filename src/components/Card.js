@@ -36,9 +36,9 @@ const Card = ({content}) => {
     }
 
     return (
-        <button type="button" className={"relative " + getClassname()} onClick = { handleClick }>
+        <button type="button" className={"relative text-5xl" + getClassname()} onClick = { handleClick }>
             <div className="h-full w-full bg-black front rounded-md"></div>
-            <div className="h-full w-full mt-[-100%] back bg-green-400 text-center rounded-md flex justify-center items-center">
+            <div className="h-full w-full back bg-green-400 text-center rounded-md flex justify-center items-center">
                 <p>{ content }</p>
             </div>
         </button>

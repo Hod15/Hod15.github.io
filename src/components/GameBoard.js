@@ -45,6 +45,7 @@ const EMOJIS = {
     'c34' : '😔' 
 };
 
+
 function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
   
@@ -82,7 +83,7 @@ function GameBoard({ level }) {
     // revealedRef.current = [];
 
     const init = () => {
-        let required_length  = (level.row * level.col) / 2;
+        let required_length  = (level.rows * level.cols) / 2;
         const EMOJIS_KEYS = Object.keys(EMOJIS);
         let emojis = EMOJIS_KEYS.slice(0, required_length );
 
@@ -187,39 +188,14 @@ function GameBoard({ level }) {
         return (buttons)
     }
 
-    const getClassname = () => {
-        return ("grid board-" + level.col + " gap-2");
-    }
-
     return (
-        <div className="flex flex-col lg:flex-row justify-center">
-            <div className={`mx-auto lg:mx-0 rounded-md`}>
-                <div className={getClassname()}>{ create_buttons() }</div>
-            </div>
-            <div className="self-center mx-auto lg:mx-0 lg:ml-20 mt-10 lg:mt-0 flex flex-col">
-                {/* <div className="mb-4 flex-grow">
-                    <div className="text-white flex flex-col">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="self-center w-14 h-14" viewBox="0 0 16 16">
-                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                        </svg>
-                        <span className="self-center text-2xl">{timer(time)} {game_pause && "⏸️"}</span>
-                    </div>
-                </div> */}
-
-                {/* <button type="button" onClick={() => reset()} disabled={!game_start} className={`bg-opacity-10 px-6 py-3 mb-5 bg-slate-200 backdrop-blur-xl rounded-md border shadow-md ${game_start ? 'text-white' : 'cursor-not-allowed bg-opacity-5 text-gray-600 border-gray-600'}`}>
-                    <h5 className="font-poppins text-center text-md lg:text-lg font-light">Start over</h5>
-                </button>
-
-                <button type="button" onClick={() => startOver(null)} className="bg-opacity-10 px-6 py-3 mb-5 bg-slate-200 backdrop-blur-xl rounded-md border shadow-md">
-                    <h5 className="font-poppins text-center text-md lg:text-lg font-light text-white">Change the difficulty </h5>
-                </button>
-
-                <button type="button" onClick={() => handlePause()} disabled={!game_start && (game_over)} className={`bg-opacity-10 px-6 py-3 mb-5 bg-slate-200 backdrop-blur-xl rounded-md border shadow-md ${(game_start && !(game_over)) ? 'text-white' : 'cursor-not-allowed bg-opacity-5 text-gray-600 border-gray-600'}`}>
-                    <h5 className="font-poppins text-center text-md lg:text-lg font-light">{game_pause ? 'Take over' : 'Pause'}</h5>
-                </button> */}
-            </div>
-        </div>
+        // <div className="flex flex-col lg:flex-row justify-center">
+            // <div className={`mx-auto`}>
+                <div className={`grid cols-${level.cols} rows-${level.rows} justify-center gap-2`}>
+                    { create_buttons() }
+                </div>
+            // </div>
+        // </div>
     )
 }
 export default GameBoard;

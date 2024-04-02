@@ -43,67 +43,70 @@
   }
 }
 
-
-.board-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+:root{
+  --col-size-3: 28vw;
+  --col-size-6: 13vw;
 }
 
-.board-6 {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+
+.cols-3 {
+  grid-template-columns: repeat(3, var(--col-size-3));
 }
 
-.board-3 button {
-  height: 7rem;
-  width: 7rem;
-  font-size: 4rem;
+.cols-3 .back {
+  margin-top: calc(-1 * var(--col-size-3));
 }
 
-.board-6 button {
-  height: 3.5rem;
-  width: 3.5rem;
-  font-size: 2rem;
+.rows-4 {
+  grid-template-rows: repeat(4, var(--col-size-3));
+}
+
+
+.cols-6 {
+  grid-template-columns: repeat(6, var(--col-size-6));
+}
+
+.cols-6 .back {
+  margin-top: calc(-1 * var(--col-size-6));
+}
+
+.rows-8 {
+  grid-template-rows: repeat(8, var(--col-size-6));
+}
+
+.rows-9 {
+  grid-template-rows: repeat(9, var(--col-size-6));
 }
 
 @media (min-width: 640px) {
 
-  .board-6 button {
-    height: 4.7rem;
-    width: 4.7rem;
-    font-size: 2rem;
+  :root{
+    --col-size-3: 22vw;
+    --col-size-6: 14vw;
   }
-
 }
 
 @media (min-width: 768px) {
 
-  .board-3 > button {
-    height: 9rem;
-    width: 9rem;
-    font-size: 3.5rem;
-  }
-
-  .board-6 button {
-    height: 4.4rem;
-    width: 4.4rem;
-    font-size: 2.5rem;
+  :root{
+    --col-size-3: 20vw;
+    --col-size-6: 10vw;
   }
 }
 
 @media (min-width: 1024px) {
-  .board-3 > button {
-    height: 10rem;
-    width: 10rem;
-    font-size: 4.5rem;
+  :root{
+    --col-size-3: 15vw;
+    --col-size-6: 7vw;
   }
-
-  .board-6 button {
-    height: 4.8rem;
-    width: 4.8rem;
-    font-size: 2.5rem;
-  }
+  
 }
 
 @media (min-width: 1280px) {
+  :root{
+    --col-size-3: 9vw;
+    --col-size-6: 5vw;
+  }
 }
 
 .front,.back{

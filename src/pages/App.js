@@ -14,8 +14,7 @@ function App() {
   // bg-[url('../public/img/bg.jpg')]
   return (
     <>
-      {/* <div className="w-full h-screen bg-black bg-opacity-10"> */}
-        <header className="bg-black px-4 py-4 text-white mb-10 flex flex-col justify-center md:flex-row md:justify-between">
+        <header className="sticky top-0 bg-black px-4 py-4 text-white mb-10 flex flex-col justify-center md:flex-row md:justify-between">
           <h1 className="inline-block text-2xl text-center font-pressStart">Keep it</h1>
 
           <div className="text-center">
@@ -24,7 +23,7 @@ function App() {
           </div>
         </header>
 
-        <div className="w-full md:max-w-md lg:max-w-xl mx-auto">
+        <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4">
           {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level}/>}
         </div>
 
@@ -40,7 +39,6 @@ function App() {
           </div>
           <div>Powered by <a href="https://github.com/josiashod" target="_blank" rel="noopener noreferrer" className="text-orange-300">@josiashod</a></div>
         </footer>
-      {/* </div> */}
     </>
   );
 }
