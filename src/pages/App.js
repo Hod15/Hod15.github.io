@@ -21,15 +21,16 @@ function App() {
       setMoves(0);
   }, [level]);
 
-  const resetMoves = () => {
+  const reset = () => {
     setMoves(level.moves)
+    setFound(0)
   }
 
   // bg-[url('../public/img/bg.jpg')]
   return (
     <>
         <header className="sticky top-0 bg-black px-4 py-4 text-white mb-10 flex flex-col justify-center md:flex-row md:justify-between">
-          <h1 className="inline-block text-2xl text-center font-pressStart">Keep it</h1>
+          <h1 className="inline-block text-2xl text-center font-pressStart">Memory card</h1>
 
           <div className="text-center">
             <span> Moves left : { moves } ,</span>
@@ -37,11 +38,19 @@ function App() {
           </div>
         </header>
 
-        <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4">
-          {!level ? <Level handleLevel={setLevel} /> : <GameBoard level={level} changeDifficulty={setLevel} handleMoves={ setMoves } movesLeft={moves} reset={ resetMoves } />}
+        <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4 mb-8">
+          {!level ? <Level handleLevel={setLevel} /> : 
+            <GameBoard 
+              level={level} changeDifficulty={setLevel} 
+              handleMoves={ setMoves }
+              movesLeft={moves}
+              reset={ reset }
+              found={ found }
+              handleFoundCard={ setFound }
+            />}
         </div>
 
-        <footer className="absolute bottom-0 px-9 py-4 w-full bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl flex justify-between text-white font-thin">
+        {/* <footer className="px-9 py-4 w-full bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl flex justify-between text-white font-thin">
           <div>
             <button className="border bg-red-500 p-3 rounded-lg" >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-music-note-beamed" viewBox="0 0 16 16">
@@ -52,7 +61,7 @@ function App() {
             </button>
           </div>
           <div>Powered by <a href="https://github.com/josiashod" target="_blank" rel="noopener noreferrer" className="text-orange-300">@josiashod</a></div>
-        </footer>
+        </footer> */}
     </>
   );
 }

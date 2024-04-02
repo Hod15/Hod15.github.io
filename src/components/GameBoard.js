@@ -68,7 +68,7 @@ function shuffle(array) {
  * GameBoard component
  * @returns JSX
  */
-function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
+function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, found, handleFoundCard }) {
     const [game, setGame] = useState([]);
     const [cards, setCards] = useState([]);
     const [revealedCards, setRevealedCards] = useState([]);
@@ -114,6 +114,10 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
             init();
     }, [level]);
 
+    useEffect(() => {
+        setGameOver(movesLeft === 0);
+    }, [movesLeft]);
+
     const handleReset = () => {
         setGame(Array.from({ length: (level.rows * level.cols) }, () => "f"));
         setTimeout(() => init(), 500);
@@ -123,8 +127,8 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
         if (game_start)
             setGameStart(false);
 
-        // if (game_over)
-        //     setGameOver(false);
+        if (game_over)
+            setGameOver(false);
         
         setClickedCard(-1);
         setLastClickedCard(-1);
@@ -140,13 +144,18 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
     }
 
     useEffect(() => {
-        
+
+        if(game_over)
+            return;
+
         if(clicked_card !== -1)
         {
             let played_cards = revealedCards;
             played_cards[clicked_card] = true;
-            console.log(played_cards)
             setRevealedCards(played_cards);
+
+            if(!game_start)
+                setGameStart(true)
         }
 
         if(last_clicked_card !== -1)
@@ -163,24 +172,26 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset }) {
             else
             {
                 localStorage.setItem("played_cards", JSON.stringify(revealedCards));
+                handleFoundCard(found + 1);
             }
 
             setLastClickedCard(-1);
             setClickedCard(-1);
+
+            setGameOver(doesUserWin());
         }
         else
             setLastClickedCard(clicked_card);
 
-        if(!game_start)
-            setGameStart(true)
-
     }, [clicked_card]);
 
-    // const click = (id) => {
-    //     setTimeout(() => {
-    //         revealedRef.current[id].click();
-    //     }, 10);
-    // }
+    // return true if every cards has been revealed
+    const doesUserWin = () => {
+        return  revealedCards.reduce(
+            (win, currentValue) => win && currentValue,
+            true,
+        );
+    }
 
     useEffect(() => {
         const interval_id = (game_start && !game_over) && setInterval(() => setTime(time + 1), 1000);
