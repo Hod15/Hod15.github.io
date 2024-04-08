@@ -1,10 +1,11 @@
-// import { useRef } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+// import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from 'react-confetti'
 import Card from "./Card";
 
 /* Game ringtones */
 const ringtones = {
-    bomb: './ringtones/Bomb.mp3',
+    lose: './ringtones/lose.wav',
     win: './ringtones/Applause.mp3',
 }
 
@@ -68,18 +69,24 @@ function shuffle(array) {
  * GameBoard component
  * @returns JSX
  */
-function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, found, handleFoundCard }) {
+function GameBoard({ level, changeDifficulty }) {
     const [game, setGame] = useState([]);
-    const [cards, setCards] = useState([]);
+    // const [cards, setCards] = useState([]);
     const [revealedCards, setRevealedCards] = useState([]);
 
     const [last_clicked_card, setLastClickedCard] = useState(-1);
-    const [clicked_card, setClickedCard] = useState(-1);
+    // const [clicked_card, setClickedCard] = useState(-1);
 
     const [time, setTime] = useState(0);
     const [game_start, setGameStart] = useState(false);
     const [game_over, setGameOver] = useState(false);
 
+    const [ moves, setMoves ] = useState(0);
+    const [ found, setFound ] = useState(0);
+
+    const audioElement = useRef();
+
+    // init the game and the revealed cards
     const init = () => {
         let array_size = level.rows * level.cols;
         let required_length  = array_size / 2;
@@ -112,17 +119,23 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
         }
         else
             init();
-    }, [level]);
+    }, []);
 
     useEffect(() => {
-        setGameOver(movesLeft === 0);
-    }, [movesLeft]);
+        if(level)
+          setMoves(level.moves)
+        else
+          setMoves(0);
+      }, [level]);
 
+    useEffect(() => {
+        setGameOver(moves === 0);
+    }, [moves]);
+
+    // reset gameboard to allow user to play another game
     const handleReset = () => {
         setGame(Array.from({ length: (level.rows * level.cols) }, () => "f"));
         setTimeout(() => init(), 500);
-        
-        reset();
         
         if (game_start)
             setGameStart(false);
@@ -130,8 +143,11 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
         if (game_over)
             setGameOver(false);
         
-        setClickedCard(-1);
+        // setClickedCard(-1);
         setLastClickedCard(-1);
+
+        setMoves(level.moves);
+        setFound(0);
 
         setTime(0);
     }
@@ -143,20 +159,24 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
         changeDifficulty(null);
     }
 
-    useEffect(() => {
+    const playSound = () => {
+        audioElement.current.src = doesUserWin() ? ringtones.win : ringtones.lose;
+        audioElement.current.currentTime = 0;
+        audioElement.current.play();
 
+        // setTimeout(() => { sound.stop() }, 1000);
+    }
+
+    const handleClick = (clicked_card) => {
         if(game_over)
             return;
 
-        if(clicked_card !== -1)
-        {
-            let played_cards = revealedCards;
-            played_cards[clicked_card] = true;
-            setRevealedCards(played_cards);
+        let played_cards = revealedCards;
+        played_cards[clicked_card] = true;
+        setRevealedCards(played_cards);
 
-            if(!game_start)
-                setGameStart(true)
-        }
+        if(!game_start)
+            setGameStart(true)
 
         if(last_clicked_card !== -1)
         {
@@ -167,23 +187,21 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
                 played_cards[last_clicked_card] = false;
 
                 setTimeout(() => setRevealedCards(played_cards), 500);
-                handleMoves(movesLeft - 1);
+                setMoves(moves - 1);
             }
             else
             {
                 localStorage.setItem("played_cards", JSON.stringify(revealedCards));
-                handleFoundCard(found + 1);
+                setFound(found + 1);
             }
 
             setLastClickedCard(-1);
-            setClickedCard(-1);
 
             setGameOver(doesUserWin());
         }
         else
             setLastClickedCard(clicked_card);
-
-    }, [clicked_card]);
+    }
 
     // return true if every cards has been revealed
     const doesUserWin = () => {
@@ -193,7 +211,10 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
         );
     }
 
+    // timer setinterval
     useEffect(() => {
+        if(game_over && game_start)
+            playSound();
         const interval_id = (game_start && !game_over) && setInterval(() => setTime(time + 1), 1000);
         return () => clearInterval(interval_id);
     }, [time, game_start, game_over]);
@@ -207,12 +228,26 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
     }
 
     return (
-        // <div className="flex flex-col lg:flex-row justify-center">
-            <div className={`mx-auto relative`}>
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10  flex space-x-1 mb-2">
-                    <button className="px-6 py-2 bg-red-300" onClick={ handleReset }>reset</button>
-                    <div className="px-6 py-2 bg-red-300">{ displayTime(time) }</div>
-                    <button className="px-6 py-2 bg-red-300" onClick={ handleChangeDifficulty }>change level</button>
+        <>
+            <audio ref={audioElement} />
+            { (game_over && doesUserWin()) && <Confetti />}
+
+            <div className="mx-auto relative flex flex-col lg:flex-row justify-center">
+                <div className="lg:order-2 mb-4 lg:mb-0 lg:ml-4 rounded-md bg-black bg-opacity-60 backdrop-filter backdrop-blur-xl px-4 py-4 text-center text-white flex flex-col">
+                    <div className="lg:flex-grow flex flex-col justify-center">
+                        <div className="px-6 py-2 text-xl md:text-4xl">{ displayTime(time) }</div>
+                        <div className="mb-4">
+                            <span> Moves left : { moves } ,</span>
+                            <span> Found: { found }  </span>
+                        </div>
+                        <div className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-2 justify-center mb-2">
+                            <button className="px-6 py-2 lg:w-full bg-black" onClick={ handleReset }>reset</button>
+                            <button className="px-2 py-2 lg:w-full bg-black" onClick={ handleChangeDifficulty }>change level</button>
+                        </div>
+                    </div>
+                    <p className="">
+                        Powered by <a href="https://github.com/josiashod" target="_blank" rel="noopener noreferrer" className="text-blue-300">@josiashod</a>
+                    </p>
                 </div>
                 <div className={`grid cols-${level.cols} rows-${level.rows} justify-center gap-2`}>
                     {game.map((value, index) => (
@@ -220,13 +255,13 @@ function GameBoard({ level, changeDifficulty, handleMoves, movesLeft, reset, fou
                             key={index}
                             id={index}
                             content={EMOJIS[game[index]]}
-                            reveal={ setClickedCard }
+                            reveal={ handleClick }
                             hasBeenRevealed={revealedCards[index]}
                         />
                     ))}
                 </div>
             </div>
-        // </div>
+        </>
     )
 }
 export default GameBoard;

@@ -4,8 +4,6 @@ import GameBoard from "../components/GameBoard";
 
 function App() {
   const [level, setLevel] = useState(null)
-  const [ moves, setMoves ] = useState(0);
-  const [ found, setFound ] = useState(0);
 
   useEffect(() => {
     let lvl = localStorage.getItem('level');
@@ -14,40 +12,15 @@ function App() {
   }, []);
 
 
-  useEffect(() => {
-    if(level)
-      setMoves(level.moves)
-    else
-      setMoves(0);
-  }, [level]);
-
-  const reset = () => {
-    setMoves(level.moves)
-    setFound(0)
-  }
-
-  // bg-[url('../public/img/bg.jpg')]
   return (
     <>
-        <header className="sticky top-0 bg-black px-4 py-4 text-white mb-10 flex flex-col justify-center md:flex-row md:justify-between">
-          <h1 className="inline-block text-2xl text-center font-pressStart">Memory card</h1>
-
-          <div className="text-center">
-            <span> Moves left : { moves } ,</span>
-            <span> Found: { found } </span>
-          </div>
+        <header className="sticky top-0 bg-black px-4 py-4 text-white mb-4 text-center z-50">
+          <h1 className="inline-block text-4xl font-pressStart uppercase">Memory card</h1>
         </header>
 
-        <div className="w-full md:max-w-md lg:max-w-xl mx-auto px-4 mb-8">
+        <div className="w-full mx-auto px-4 mb-8">
           {!level ? <Level handleLevel={setLevel} /> : 
-            <GameBoard 
-              level={level} changeDifficulty={setLevel} 
-              handleMoves={ setMoves }
-              movesLeft={moves}
-              reset={ reset }
-              found={ found }
-              handleFoundCard={ setFound }
-            />}
+            <GameBoard level={level} changeDifficulty={setLevel} />}
         </div>
 
         {/* <footer className="px-9 py-4 w-full bg-black bg-opacity-20 backdrop-filter backdrop-blur-xl flex justify-between text-white font-thin">

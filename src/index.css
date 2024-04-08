@@ -41,24 +41,29 @@
   html {
     font-family: 'space-mono';
   }
+  body {
+    background-image: url('./../public/img/bg3.jpg');
+    background-size: cover;
+    /* background-position: center; */
+    background-repeat: repeat;
+  }
 }
 
 :root{
-  --col-size-3: 28vw;
+  --col-size-4: 20vw;
   --col-size-6: 13vw;
 }
 
-
-.cols-3 {
-  grid-template-columns: repeat(3, var(--col-size-3));
+.cols-4 {
+  grid-template-columns: repeat(4, var(--col-size-4));
 }
 
-.cols-3 .back {
-  margin-top: calc(-1 * var(--col-size-3));
+.cols-4 .back {
+  margin-top: calc(-1 * var(--col-size-4));
 }
 
 .rows-4 {
-  grid-template-rows: repeat(4, var(--col-size-3));
+  grid-template-rows: repeat(4, var(--col-size-4));
 }
 
 
@@ -81,7 +86,7 @@
 @media (min-width: 640px) {
 
   :root{
-    --col-size-3: 22vw;
+    --col-size-4: 22vw;
     --col-size-6: 14vw;
   }
 }
@@ -89,14 +94,19 @@
 @media (min-width: 768px) {
 
   :root{
-    --col-size-3: 20vw;
+    --col-size-4: 20vw;
     --col-size-6: 10vw;
   }
+
+  /* .menu {
+    width: 3rem;
+    height: 3rem;
+  } */
 }
 
 @media (min-width: 1024px) {
   :root{
-    --col-size-3: 15vw;
+    --col-size-4: 15vw;
     --col-size-6: 7vw;
   }
   
@@ -104,7 +114,7 @@
 
 @media (min-width: 1280px) {
   :root{
-    --col-size-3: 9vw;
+    --col-size-4: 9vw;
     --col-size-6: 5vw;
   }
 }
