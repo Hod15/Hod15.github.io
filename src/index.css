@@ -42,7 +42,7 @@
     font-family: 'space-mono';
   }
   body {
-    background-image: url('./../public/img/bg3.jpg');
+    background-image: url('./../public/img/bg.jpg');
     background-size: cover;
     /* background-position: center; */
     background-repeat: repeat;
@@ -97,11 +97,6 @@
     --col-size-4: 20vw;
     --col-size-6: 10vw;
   }
-
-  /* .menu {
-    width: 3rem;
-    height: 3rem;
-  } */
 }
 
 @media (min-width: 1024px) {
