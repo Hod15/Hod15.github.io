@@ -232,7 +232,7 @@ function GameBoard({ level, changeDifficulty }) {
             <audio ref={audioElement} />
             { (game_over && doesUserWin()) && <Confetti />}
 
-            <div className="mx-auto relative flex flex-col lg:flex-row justify-center">
+            <div className="mx-auto relative flex flex-col lg:flex-row justify-center mb-3">
                 <div className="lg:order-2 mb-4 lg:mb-0 lg:ml-4 rounded-md bg-black bg-opacity-60 backdrop-filter backdrop-blur-xl px-4 py-4 text-center text-white flex flex-col">
                     <div className="lg:flex-grow flex flex-col justify-center">
                         <div className="px-6 py-2 text-xl md:text-4xl">{ displayTime(time) }</div>
