@@ -42,10 +42,10 @@
     font-family: 'space-mono';
   }
   body {
-    background-image: url('./../public/img/bg.jpg');
+    background: url('./../public/img/bg.jpg') no-repeat center center fixed;
     background-size: cover;
     /* background-position: center; */
-    background-repeat: repeat;
+    /* background-repeat: repeat; */
   }
 }
 

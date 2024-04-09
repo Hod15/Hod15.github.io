@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 // import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
 import Card from "./Card";
@@ -87,7 +87,7 @@ function GameBoard({ level, changeDifficulty }) {
     const audioElement = useRef();
 
     // init the game and the revealed cards
-    const init = () => {
+    const init = useCallback(() => {
         let array_size = level.rows * level.cols;
         let required_length  = array_size / 2;
         const EMOJIS_KEYS = Object.keys(EMOJIS);
@@ -107,7 +107,7 @@ function GameBoard({ level, changeDifficulty }) {
         setRevealedCards(played_cards);
         localStorage.setItem("gameboard", JSON.stringify(emojis));
         localStorage.setItem("played_cards", JSON.stringify(played_cards));
-    }
+    }, [level])
 
     useEffect(() => {
         let storedGame = JSON.parse(localStorage.getItem('gameboard'));
@@ -120,8 +120,7 @@ function GameBoard({ level, changeDifficulty }) {
         else
             init();
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [init]);
 
     useEffect(() => {
         if(level)
@@ -161,12 +160,6 @@ function GameBoard({ level, changeDifficulty }) {
         changeDifficulty(null);
     }
 
-    const playSound = () => {
-        audioElement.current.src = doesUserWin() ? ringtones.win : ringtones.lose;
-        audioElement.current.currentTime = 0;
-        audioElement.current.play();
-    }
-
     const handleClick = (clicked_card) => {
         if(game_over)
             return;
@@ -204,12 +197,18 @@ function GameBoard({ level, changeDifficulty }) {
     }
 
     // return true if every cards has been revealed
-    const doesUserWin = () => {
+    const doesUserWin = useCallback(() => {
         return  revealedCards.reduce(
             (win, currentValue) => win && currentValue,
             true,
         );
-    }
+    }, [revealedCards])
+
+    const playSound = useCallback(() => {
+        audioElement.current.src = doesUserWin() ? ringtones.win : ringtones.lose;
+        audioElement.current.currentTime = 0;
+        audioElement.current.play();
+    }, [doesUserWin])
 
     // timer setinterval
     useEffect(() => {
@@ -218,8 +217,7 @@ function GameBoard({ level, changeDifficulty }) {
         const interval_id = (game_start && !game_over) && setInterval(() => setTime(time + 1), 1000);
         return () => clearInterval(interval_id);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [time, game_start, game_over]);
+    }, [time, game_start, game_over, playSound]);
 
     const displayTime = (time) => {
         // calculate time spent
