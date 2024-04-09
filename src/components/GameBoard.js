@@ -119,6 +119,8 @@ function GameBoard({ level, changeDifficulty }) {
         }
         else
             init();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -163,8 +165,6 @@ function GameBoard({ level, changeDifficulty }) {
         audioElement.current.src = doesUserWin() ? ringtones.win : ringtones.lose;
         audioElement.current.currentTime = 0;
         audioElement.current.play();
-
-        // setTimeout(() => { sound.stop() }, 1000);
     }
 
     const handleClick = (clicked_card) => {
@@ -217,6 +217,8 @@ function GameBoard({ level, changeDifficulty }) {
             playSound();
         const interval_id = (game_start && !game_over) && setInterval(() => setTime(time + 1), 1000);
         return () => clearInterval(interval_id);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [time, game_start, game_over]);
 
     const displayTime = (time) => {
