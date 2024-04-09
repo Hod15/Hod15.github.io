@@ -18,7 +18,7 @@ function App() {
           <h1 className="inline-block text-4xl font-pressStart uppercase">Memory card</h1>
         </header>
 
-        <div className="w-full mx-auto px-4 mb-8">
+        <div className="w-full mx-auto px-4">
           {!level ? <Level handleLevel={setLevel} /> : 
             <GameBoard level={level} changeDifficulty={setLevel} />}
         </div>

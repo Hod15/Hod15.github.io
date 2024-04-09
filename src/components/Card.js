@@ -3,11 +3,6 @@ import { useEffect, useState } from "react";
 const Card = ({id, content, reveal, hasBeenRevealed}) => {
     const [revealed, setRevealed] = useState(false);
 
-    // useEffect(() => {
-    //     const interval_id = (revealed && !gameIsOver) && setInterval(() => setClicked(false), 1000)
-    //     return () => clearInterval(interval_id);
-    // }, [revealed, gameIsOver]);
-
     useEffect(() => {
         setRevealed(hasBeenRevealed)
     }, [hasBeenRevealed]);
