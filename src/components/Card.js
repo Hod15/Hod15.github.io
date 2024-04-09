@@ -18,7 +18,7 @@ const Card = ({id, content, reveal, hasBeenRevealed}) => {
     }
 
     return (
-        <button type="button" className={"relative text-3xl md:text-5xl " + ((revealed) ? "revealed" : "")} onClick = { () => handleClick() }>
+        <button type="button" className={"relative text-4xl md:text-5xl " + ((revealed) ? "revealed" : "")} onClick = { () => handleClick() }>
             <div className="h-full w-full bg-black bg-opacity-60 backdrop-filter backdrop-blur-lg front rounded-md"></div>
             <div className="h-full w-full back bg-white bg-opacity-30 backdrop-filter backdrop-blur-lg text-center rounded-md flex justify-center items-center">
                 <p>{ content }</p>
